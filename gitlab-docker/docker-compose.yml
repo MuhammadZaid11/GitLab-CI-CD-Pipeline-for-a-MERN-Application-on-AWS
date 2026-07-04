@@ -5,11 +5,15 @@ services:
     container_name: my-gitlab-server
     hostname: my-gitlab-server
     restart: always
+    privileged: true
     ports:
       - '8000:80'
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-        gitlab_rails['initial_root_password'] = 'FArzeen@12345'
+        external_url 'http://my-gitlab-server:8000'
+        nginx['listen_port'] = 80
+        nginx['listen_https'] = false
+        gitlab_rails['initial_root_password'] = 'muhammadzaid12345'
         puma['worker_processes'] = 0
         external_url 'http://my-gitlab-server:8000'
     volumes:
