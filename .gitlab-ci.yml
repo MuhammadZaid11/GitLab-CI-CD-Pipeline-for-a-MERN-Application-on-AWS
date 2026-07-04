@@ -1,0 +1,21 @@
+stages:
+  - build
+  - test
+
+# Job: Build stage ke liye
+build_app:
+  stage: build
+  tags:
+    - docker
+  script:
+    - echo "Building the application..."
+    - docker compose up --build -d
+
+# Job: Test stage ke liye
+run_tests:
+  stage: test
+  tags:
+    - docker
+  script:
+    - echo "Running tests..."
+    - # Yahan apni test command likhein, jaise: npm test
