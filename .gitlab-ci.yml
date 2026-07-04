@@ -1,21 +1,46 @@
 stages:
   - build
   - test
+  - deploy
 
-# Job: Build stage ke liye
-build_app:
+variables:
+  DOCKER_TLS_CERTDIR: ""
+  COMPOSE_PROJECT_NAME: taskflow_ci
+
+default:
+  tags:
+    - docker
+
+build_images:
   stage: build
-  tags:
-    - docker
+  image: docker:24.0
+  services:
+    - docker:24.0-dind
   script:
-    - echo "Building the application..."
-    - docker compose up --build -d
+    - docker version
+    - docker compose version
+    - docker compose build
 
-# Job: Test stage ke liye
-run_tests:
+smoke_test:
   stage: test
-  tags:
-    - docker
+  image: docker:24.0
+  services:
+    - docker:24.0-dind
+    - mongo:7
   script:
-    - echo "Running tests..."
-    - # Yahan apni test command likhein, jaise: npm test
+    - docker compose up -d
+    - echo "Waiting for backend health check..."
+    - until docker compose ps backend | grep -q "healthy\|running"; do sleep 5; done
+    - curl --fail http://127.0.0.1:5000/api/health
+    - docker compose down -v
+
+deploy_staging:
+  stage: deploy
+  image: alpine:3.20
+  script:
+    - echo "Deploying to staging environment..."
+    - echo "Add your real deployment commands here."
+  environment:
+    name: staging
+  only:
+    - main
