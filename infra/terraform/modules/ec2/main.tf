@@ -1,7 +1,14 @@
+resource "aws_vpc" "main" {
+
+  cidr_block = "0.0.0.0/0"
+
+}
+
 
 resource "aws_security_group" "ansible_sg" {
   name        = "ansible-security-group"
   description = "Allow SSH and HTTP traffic"
+  vpc_id = aws_vpc.main.id
 
   ingress {
     description = "SSH Access"
@@ -32,13 +39,13 @@ resource "aws_security_group" "ansible_sg" {
   }
 }
 
-resource "aws_instance" "Ansible-server" {
-    count = var.instance_count
-    ami = var.ami
-    instance_type = var.instance_type
-    key_name = "Backup_key"
-    vpc_security_group_ids = [aws_security_group.ansible_sg.id]
-    tags = {
-      Name = "worker-${count.index+1}"
-    }
+resource "aws_instance" "ansible_server" {
+  count                  = var.instance_count
+  ami                    = var.ami
+  instance_type          = var.instance_type
+  key_name               = "Backup_key"
+  vpc_security_group_ids = [aws_security_group.ansible_sg.id]
+  tags = {
+    Name = "worker-${count.index + 1}"
+  }
 }

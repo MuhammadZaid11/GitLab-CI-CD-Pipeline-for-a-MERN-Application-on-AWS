@@ -7,3 +7,21 @@ module "ec2" {
 
 
 }
+
+module "ecr" {
+
+  source = "./modules/ecr"
+
+  repository_names = [
+    "frontend",
+    "backend"
+  ]
+}
+
+module "iam" {
+
+  source = "./modules/iam"
+
+  role_name             = "devops-ec2-role"
+  instance_profile_name = "devops-instance-profile"
+}
