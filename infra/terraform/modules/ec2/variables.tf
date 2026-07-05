@@ -14,5 +14,5 @@ variable "name" {
 variable "instance_count" {
     description = "Total number of instances to create (1 control + N workers)"
     type        = number
-    default     = 5
+    default     = 1
 }
