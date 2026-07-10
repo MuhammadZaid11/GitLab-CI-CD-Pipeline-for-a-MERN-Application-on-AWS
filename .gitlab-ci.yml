@@ -1,6 +1,7 @@
 stages:
   - build
   - test
+  - push_to_Dockerhub
   - deploy
 
 variables:
